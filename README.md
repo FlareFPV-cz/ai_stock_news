@@ -11,7 +11,7 @@ A Python application that delivers a daily morning summary of stock-related news
 - **Smart Filtering**: Ranks articles by relevance to your interests
 - **Scheduled Delivery**: Automatically delivers summaries at your preferred time each day
 
-## Optional Features
+## Optional Features - TODO
 
 - Sentiment analysis on stock-related articles
 - Stock price movements alongside news
