@@ -1,0 +1,77 @@
+{
+  "sources": {
+    "CNBC": {
+      "name": "CNBC",
+      "rss_feeds": [
+        {
+          "url": "https://www.cnbc.com/id/10000664/device/rss/rss.html",
+          "category": "Finance"
+        },
+        {
+          "url": "https://www.cnbc.com/id/10001147/device/rss/rss.html",
+          "category": "Investing"
+        },
+        {
+          "url": "https://www.cnbc.com/id/10000115/device/rss/rss.html",
+          "category": "Markets"
+        }
+      ]
+    },
+    "WSJ": {
+      "name": "Wall Street Journal",
+      "rss_feeds": [
+        {
+          "url": "https://feeds.a.dj.com/rss/RSSMarketsMain.xml",
+          "category": "Markets"
+        },
+        {
+          "url": "https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml",
+          "category": "Business"
+        }
+      ]
+    },
+    "Bloomberg": {
+      "name": "Bloomberg",
+      "rss_feeds": [
+        {
+          "url": "https://feeds.bloomberg.com/markets/news.rss",
+          "category": "Markets"
+        },
+        {
+          "url": "https://feeds.bloomberg.com/technology/news.rss",
+          "category": "Technology"
+        },
+        {
+          "url": "https://feeds.bloomberg.com/wealth/news.rss",
+          "category": "Wealth"
+        }
+      ]
+    },
+    "Reuters": {
+      "name": "Reuters",
+      "rss_feeds": [
+        {
+          "url": "https://www.reutersagency.com/feed/?best-topics=business-finance&post_type=best",
+          "category": "Business & Finance"
+        },
+        {
+          "url": "https://www.reutersagency.com/feed/?best-topics=markets&post_type=best",
+          "category": "Markets"
+        }
+      ]
+    },
+    "MarketWatch": {
+      "name": "MarketWatch",
+      "rss_feeds": [
+        {
+          "url": "https://www.marketwatch.com/rss/topstories",
+          "category": "Top Stories"
+        },
+        {
+          "url": "https://www.marketwatch.com/rss/marketpulse",
+          "category": "Market Pulse"
+        }
+      ]
+    }
+  }
+}

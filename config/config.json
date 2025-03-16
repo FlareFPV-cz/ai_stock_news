@@ -1,0 +1,39 @@
+{
+  "news_sources": ["CNBC", "WSJ", "Bloomberg"],
+  "tickers": ["AAPL", "MSFT", "GOOGL"],
+  "keywords": ["interest rates", "tech earnings", "market analysis"],
+  "delivery": {
+    "ntfy": {
+      "enabled": false,
+      "topic": "your-ntfy-topic"
+    },
+    "email": {
+      "enabled": true,
+      "address": "delivery@mail.com",
+      "smtp_server": "smtp.gmail.com",
+      "smtp_port": 465,
+      "sender_email": "sender@mail.com",
+      "password": "your-app-password"
+    },
+    "telegram": {
+      "enabled": false,
+      "bot_token": "",
+      "chat_id": ""
+    },
+    "discord": {
+      "enabled": true,
+      "webhook_url": ""
+    }
+  },
+  "ai": {
+    "provider": "groq",
+    "api_key": "",
+    "model": "qwen-qwq-32b",
+    "max_tokens": 8192,
+    "summary_length": "300-1000"
+  },
+  "schedule": {
+    "time": "09:00",
+    "timezone": "Europe/Prague"
+  }
+}
