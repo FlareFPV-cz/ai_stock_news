@@ -32,6 +32,7 @@ A Python application that delivers a daily morning summary of stock-related news
 ├── main.py                 # Main application entry point
 ├── requirements.txt        # Project dependencies
 └── README.md               # Project documentation
+```
 
 ## Setup and Installation
 
