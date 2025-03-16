@@ -6,4 +6,4 @@ schedule==1.2.0
 markdown==3.5.1
 weasyprint==60.1
 # Optional dependencies for sentiment analysis
-nltk==3.8.1
+nltk==3.9.1
