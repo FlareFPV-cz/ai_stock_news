@@ -39,7 +39,7 @@ A Python application that delivers a daily morning summary of stock-related news
 1. Clone the repository
 2. Install dependencies: `pip install -r requirements.txt`
 3. Configure your preferences in `config/config.json`
-4. Run the application: `python main.py`
+4. Run the application: `python main.py` or `python main.py instant` or  `python main.py--instant --all-articles`
 
 ## Configuration
 
