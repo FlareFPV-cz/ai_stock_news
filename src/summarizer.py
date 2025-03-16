@@ -93,10 +93,34 @@ class Summarizer:
                 temperature=0.3,
                 max_tokens=max_tokens
             )
-            return response.choices[0].message.content
+            
+            # Get the response content
+            content = response.choices[0].message.content
+            
+            # Filter out any <think> blocks from the response
+            filtered_content = self._filter_think_blocks(content)
+            
+            return filtered_content
         except Exception as e:
             logger.error(f"Error generating summary: {e}")
             return "Error: Unable to generate summary at this time."
+    
+    def _filter_think_blocks(self, text: str) -> str:
+        """
+        Filter out <think> blocks from the text.
+        
+        Args:
+            text: The text to filter
+            
+        Returns:
+            Filtered text
+        """
+        import re
+        # Remove all content between <think> and </think> tags (including the tags)
+        filtered_text = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL)
+        # Remove any empty lines that might result from the filtering
+        filtered_text = re.sub(r'\n\s*\n', '\n\n', filtered_text)
+        return filtered_text
     
     def _prepare_prompt(self, articles: List[Dict[str, Any]], use_all_articles: bool = False) -> str:
         """

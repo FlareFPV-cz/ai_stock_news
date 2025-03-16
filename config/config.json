@@ -2,13 +2,23 @@
   "news_sources": ["CNBC", "WSJ", "Bloomberg"],
   "tickers": ["AAPL", "MSFT", "GOOGL"],
   "keywords": ["interest rates", "tech earnings", "market analysis"],
+  "stock_prices": {
+    "provider": "alphavantage",
+    "api_key": "YOUR_ALPHAVANTAGE_API_KEY"
+  },
+  "sentiment": {
+    "use_ai": true
+  },
+  "export": {
+    "directory": "exports"
+  },
   "delivery": {
     "ntfy": {
       "enabled": false,
       "topic": "your-ntfy-topic"
     },
     "email": {
-      "enabled": true,
+      "enabled": false,
       "address": "delivery@mail.com",
       "smtp_server": "smtp.gmail.com",
       "smtp_port": 465,

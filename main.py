@@ -7,6 +7,9 @@ from src.news_fetcher import NewsFetcher
 from src.news_processor import NewsProcessor
 from src.summarizer import Summarizer
 from src.delivery import DeliveryManager
+from src.sentiment_analyzer import SentimentAnalyzer
+from src.stock_price_fetcher import StockPriceFetcher
+from src.export_manager import ExportManager
 import json
 import os
 
@@ -30,12 +33,13 @@ def load_config(config_file='config/config.json'):
         logger.error(f"Error loading configuration: {e}")
         return {}
 
-def generate_news_summary(use_all_articles=False):
+def generate_news_summary(use_all_articles=False, export_format=None):
     """
     Main function to generate and deliver the news summary.
     
     Args:
         use_all_articles: Whether to use all articles or only relevant ones
+        export_format: Format to export the summary (None, 'markdown', 'pdf', or 'both')
     """
     logger.info("Starting news summary generation")
     
@@ -44,6 +48,9 @@ def generate_news_summary(use_all_articles=False):
     news_processor = NewsProcessor()
     summarizer = Summarizer()
     delivery_manager = DeliveryManager()
+    sentiment_analyzer = SentimentAnalyzer()
+    stock_price_fetcher = StockPriceFetcher()
+    export_manager = ExportManager()
     
     # Fetch news articles
     logger.info("Fetching news articles")
@@ -67,6 +74,14 @@ def generate_news_summary(use_all_articles=False):
         logger.warning("No relevant articles found after filtering")
         return
     
+    # Analyze sentiment
+    logger.info("Analyzing sentiment of articles")
+    sentiment_results = sentiment_analyzer.analyze_sentiment(ranked_articles)
+    
+    # Fetch stock prices
+    logger.info("Fetching current stock prices")
+    stock_prices = stock_price_fetcher.fetch_stock_prices()
+    
     # Generate summary
     logger.info("Generating summary")
     summary = summarizer.generate_summary(ranked_articles[:20], use_all_articles=use_all_articles)  # Limit to top 20 articles
@@ -74,6 +89,25 @@ def generate_news_summary(use_all_articles=False):
     # Get current date for the title
     current_date = datetime.now().strftime("%B %d, %Y")
     title = f"Stock News Summary - {current_date}"
+    
+    # Prepare additional data for export
+    additional_data = {
+        'sentiment': sentiment_results,
+        'stock_prices': stock_prices
+    }
+    
+    # Export summary if requested
+    if export_format:
+        if export_format in ['markdown', 'both']:
+            md_path = export_manager.export_to_markdown(summary, title, additional_data)
+            logger.info(f"Exported summary to Markdown: {md_path}")
+            
+        if export_format in ['pdf', 'both']:
+            pdf_path = export_manager.export_to_pdf(summary, title, additional_data)
+            if pdf_path:
+                logger.info(f"Exported summary to PDF: {pdf_path}")
+            else:
+                logger.warning("PDF export failed or not available")
     
     # Deliver summary
     logger.info("Delivering summary")
@@ -135,24 +169,20 @@ def main():
     # Check if this is a one-time run or scheduled run
     import argparse
     parser = argparse.ArgumentParser(description='Stock News Summarizer')
-    parser.add_argument('--now', action='store_true', help='Generate summary immediately')
     parser.add_argument('--instant', action='store_true', help='Generate summary instantly without scheduling')
     parser.add_argument('--all-articles', action='store_true', help='Generate summary from all articles, not just relevant ones')
+    parser.add_argument('--export', choices=['markdown', 'pdf', 'both'], help='Export summary to file format')
     args = parser.parse_args()
     
-    if args.now or args.instant:
+    if args.instant:
         # Run immediately
-        generate_news_summary(use_all_articles=args.all_articles)
-        # If --instant was specified, exit after generating
-        if args.instant:
-            logger.info("Instant summary generation completed")
-            return
+        generate_news_summary(use_all_articles=args.all_articles, export_format=args.export)
+        logger.info("Instant summary generation completed")
+        return
     
-    # If we get here, either no flags were specified or --now was used
-    # In both cases, we want to schedule daily runs
-    if not args.instant:
-        # Schedule daily run
-        schedule_daily_summary()
+    # If we get here, no flags were specified or only export format was specified
+    # Schedule daily run
+    schedule_daily_summary()
 
 if __name__ == "__main__":
     main()

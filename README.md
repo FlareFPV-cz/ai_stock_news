@@ -11,11 +11,17 @@ A Python application that delivers a daily morning summary of stock-related news
 - **Smart Filtering**: Ranks articles by relevance to your interests
 - **Scheduled Delivery**: Automatically delivers summaries at your preferred time each day
 
-## Optional Features - TODO
+## Features
 
-- Sentiment analysis on stock-related articles
-- Stock price movements alongside news
-- PDF/Markdown summary option
+- **News Aggregation**: Collects financial news from CNBC, WSJ, Bloomberg, Reuters, MarketWatch and other sources via RSS feeds
+- **Customization**: Filter news based on preferred sources, stocks/tickers, and keywords
+- **AI Summarization**: Uses Groq API to generate concise, easy-to-read summaries
+- **Multiple Delivery Methods**: Send summaries via ntfy push notifications, email, or messaging platforms (Telegram/Discord)
+- **Smart Filtering**: Ranks articles by relevance to your interests
+- **Scheduled Delivery**: Automatically delivers summaries at your preferred time each day
+- **Sentiment Analysis**: Analyzes sentiment of stock-related articles
+- **Stock Price Movements**: Includes current stock prices alongside news
+- **Export Options**: Export summaries to Markdown or PDF formats
 
 ## Project Structure
 
@@ -39,7 +45,32 @@ A Python application that delivers a daily morning summary of stock-related news
 1. Clone the repository
 2. Install dependencies: `pip install -r requirements.txt`
 3. Configure your preferences in `config/config.json`
-4. Run the application: `python main.py` or `python main.py instant` or  `python main.py--instant --all-articles`
+4. Run the application: `python main.py` or `python main.py --instant` or `python main.py --instant --all-articles --export markdown`
+
+#### Sample console log
+```python
+$ python main.py --instant --export markdown --all-articles
+2025-03-16 11:15:37,798 - __main__ - INFO - Starting news summary generation
+2025-03-16 11:15:38,796 - __main__ - INFO - Fetching news articles
+2025-03-16 11:15:38,803 - src.news_fetcher - INFO - Fetching news from CNBC
+2025-03-16 11:15:41,405 - src.news_fetcher - INFO - Fetching news from Wall Street Journal
+2025-03-16 11:15:42,879 - src.news_fetcher - INFO - Fetching news from Bloomberg
+2025-03-16 11:15:46,402 - src.news_fetcher - INFO - Fetched 26 articles from 3 sources
+2025-03-16 11:15:46,403 - __main__ - INFO - Processing news articles
+2025-03-16 11:15:46,403 - __main__ - INFO - Using all articles for summary generation
+2025-03-16 11:15:46,403 - src.news_processor - INFO - Bypassing filtering, returning all articles
+2025-03-16 11:15:46,403 - __main__ - INFO - Analyzing sentiment of articles
+2025-03-16 11:15:46,403 - __main__ - INFO - Fetching current stock prices
+2025-03-16 11:15:53,013 - __main__ - INFO - Generating summary
+2025-03-16 11:15:53,013 - src.summarizer - INFO - AI client model qwen-qwq-32b loaded
+2025-03-16 11:15:53,013 - src.summarizer - INFO - Using max_tokens: 8192
+2025-03-16 11:16:02,895 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-03-16 11:16:02,905 - __main__ - INFO - Exported summary to Markdown: exports\stock_summary_2025-03-16.md
+2025-03-16 11:16:02,905 - __main__ - INFO - Delivering summary
+2025-03-16 11:16:09,200 - src.delivery - INFO - Successfully delivered summary via Discord
+2025-03-16 11:16:09,202 - __main__ - INFO - Summary delivered successfully
+2025-03-16 11:16:09,202 - __main__ - INFO - Instant summary generation completed
+```
 
 ## Configuration
 
@@ -50,6 +81,16 @@ Edit the `config/config.json` file to customize your news preferences and delive
   "news_sources": ["CNBC", "WSJ", "Bloomberg", "Reuters", "MarketWatch"],
   "tickers": ["AAPL", "MSFT", "GOOGL"],
   "keywords": ["interest rates", "tech earnings", "market analysis"],
+  "stock_prices": {
+    "provider": "alphavantage",
+    "api_key": ""
+  },
+  "sentiment": {
+    "use_ai": true
+  },
+  "export": {
+    "directory": "exports"
+  },
   "delivery": {
     "ntfy": {
       "enabled": true,
@@ -128,7 +169,6 @@ Articles are ranked by relevance to your interests, with higher priority given t
 
 ### AI Summarization
 The application uses Groq's AI models to generate concise summaries. You can configure:
-
 - The AI model to use
 - Maximum token length
 - Desired summary length
