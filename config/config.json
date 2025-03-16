@@ -31,6 +31,10 @@
       "chat_id": ""
     },
     "discord": {
+      "enabled": false,
+      "webhook_url": ""
+    },
+    "teams": {
       "enabled": true,
       "webhook_url": ""
     }

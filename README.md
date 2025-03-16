@@ -7,16 +7,7 @@ A Python application that delivers a daily morning summary of stock-related news
 - **News Aggregation**: Collects financial news from CNBC, WSJ, Bloomberg, Reuters, MarketWatch and other sources via RSS feeds
 - **Customization**: Filter news based on preferred sources, stocks/tickers, and keywords
 - **AI Summarization**: Uses Groq API to generate concise, easy-to-read summaries
-- **Multiple Delivery Methods**: Send summaries via ntfy push notifications, email, or messaging platforms (Telegram/Discord)
-- **Smart Filtering**: Ranks articles by relevance to your interests
-- **Scheduled Delivery**: Automatically delivers summaries at your preferred time each day
-
-## Features
-
-- **News Aggregation**: Collects financial news from CNBC, WSJ, Bloomberg, Reuters, MarketWatch and other sources via RSS feeds
-- **Customization**: Filter news based on preferred sources, stocks/tickers, and keywords
-- **AI Summarization**: Uses Groq API to generate concise, easy-to-read summaries
-- **Multiple Delivery Methods**: Send summaries via ntfy push notifications, email, or messaging platforms (Telegram/Discord)
+- **Multiple Delivery Methods**: Send summaries via ntfy push notifications, email, or messaging platforms (Telegram/Discord/Teams)
 - **Smart Filtering**: Ranks articles by relevance to your interests
 - **Scheduled Delivery**: Automatically delivers summaries at your preferred time each day
 - **Sentiment Analysis**: Analyzes sentiment of stock-related articles
@@ -150,6 +141,18 @@ To receive summaries in a Discord channel:
 
 - Create a webhook in your Discord server
 - Add the webhook URL to the configuration
+### Microsoft Teams
+To receive summaries in a Microsoft Teams channel:
+
+- Create an incoming webhook in your Teams channel
+  - In Teams, go to the channel where you want to add the webhook
+  - Click the "..." menu next to the channel name
+  - Select "Connectors"
+  - Find "Incoming Webhook" and click "Configure"
+  - Name your webhook and upload an icon if desired
+  - Click "Create" and copy the webhook URL
+- Add the webhook URL to the configuration
+- Set enabled to true in the teams section
 ## News Sources
 The application comes pre-configured with RSS feeds from major financial news sources:
 

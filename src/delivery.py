@@ -69,6 +69,10 @@ class DeliveryManager:
         if delivery_config.get('discord', {}).get('enabled', False):
             if self._deliver_via_discord(summary, title):
                 success = True
+                
+        if delivery_config.get('teams', {}).get('enabled', False):
+            if self._deliver_via_teams(summary, title):
+                success = True
         
         return success
     
@@ -386,4 +390,102 @@ class DeliveryManager:
                 
         except Exception as e:
             logger.error(f"Error delivering via Discord: {e}")
+            return False
+    
+    def _deliver_via_teams(self, summary: str, title: str) -> bool:
+        """
+        Deliver the summary via Microsoft Teams webhook.
+        
+        Args:
+            summary: The summary text to deliver
+            title: The title of the summary
+            
+        Returns:
+            True if delivery succeeded, False otherwise
+        """
+        try:
+            teams_config = self.config['delivery']['teams']
+            webhook_url = teams_config.get('webhook_url')
+            
+            if not webhook_url:
+                logger.error("Teams webhook_url not configured")
+                return False
+            
+            # Teams has a character limit for messages
+            # We'll split the message if needed
+            max_content_length = 25000  # Teams has a larger limit than Discord
+            
+            # Format the message with title and summary
+            if len(summary) <= max_content_length:
+                # Summary fits in a single message
+                payload = {
+                    "title": title,
+                    "text": summary
+                }
+                
+                response = requests.post(
+                    webhook_url,
+                    json=payload
+                )
+                
+                if response.status_code == 200:
+                    logger.info("Successfully delivered summary via Teams")
+                    return True
+                else:
+                    logger.error(f"Failed to deliver summary via Teams: {response.status_code} {response.text}")
+                    return False
+            else:
+                # Split the summary into multiple messages
+                chunks = []
+                current_chunk = ""
+                
+                for line in summary.split('\n'):
+                    if len(current_chunk) + len(line) + 1 <= max_content_length:
+                        current_chunk += line + '\n'
+                    else:
+                        chunks.append(current_chunk)
+                        current_chunk = line + '\n'
+                
+                if current_chunk:
+                    chunks.append(current_chunk)
+                
+                # Send the first message with the title
+                first_payload = {
+                    "title": title,
+                    "text": chunks[0]
+                }
+                
+                response = requests.post(
+                    webhook_url,
+                    json=first_payload
+                )
+                
+                if response.status_code != 200:
+                    logger.error(f"Failed to deliver first part of summary via Teams: {response.status_code} {response.text}")
+                    return False
+                
+                # Send the rest of the chunks
+                for i, chunk in enumerate(chunks[1:], 1):
+                    continuation_payload = {
+                        "title": f"{title} (Continued {i}/{len(chunks)-1})",
+                        "text": chunk
+                    }
+                    
+                    response = requests.post(
+                        webhook_url,
+                        json=continuation_payload
+                    )
+                    
+                    if response.status_code != 200:
+                        logger.error(f"Failed to deliver part {i+1} of summary via Teams: {response.status_code} {response.text}")
+                        return False
+                    
+                    # Add a small delay between requests to avoid rate limiting
+                    time.sleep(1)
+                
+                logger.info("Successfully delivered multi-part summary via Teams")
+                return True
+                
+        except Exception as e:
+            logger.error(f"Error delivering summary via Teams: {e}")
             return False
